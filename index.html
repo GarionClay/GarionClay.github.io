@@ -397,16 +397,79 @@
 <li>分段<code>两个回车</code></li>
 <li>换行<code>两个空格</code>+<code>回车</code></li>
 <li>标题<code>#</code>~<code>######</code>，<code>#</code>的个数代表标题层级</li>
-<li>强调<code>**text**</code>,<code>__text__</code>,<code>*text*</code>,<code>~~j~~</code></li>
+<li>强调<code>**text**</code>,<code>__text__</code>,<code>*text*</code>,<code>~~text~~</code></li>
 <li>引用<code>&gt;</code>,注意需要在其后加一个空格</li>
 <li>表格<code>-</code>和<code>|</code>分割行和列，<code>:</code>控制对齐方式</li>
-<li>代码块<code>四个空格</code>开头，或者使用<code>```</code>来包裹代码</li>
+<li>代码块<code>四个空格</code>开头，或者使用<code>```</code>code<code>```</code></li>
 <li>链接<code>[文字](地址)</code></li>
 <li>图片<code>![图片说明](图片地址)</code></li>
 <li>列表<code>*</code>, <code>+</code>,<code>-</code>,<code>1.</code>任选其一，后面跟一个空格</li>
 </ol>
 <p>举个栗子：</p>
-<h3 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h3>
+<h3 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h3><p>输入</p>
+<pre><code>#### 标题4 ####
+##### 标题5 #####
+</code></pre><p>显示</p>
+<blockquote>
+<h4 id="标题4"><a href="#标题4" class="headerlink" title="标题4"></a>标题4</h4><h5 id="标题5"><a href="#标题5" class="headerlink" title="标题5"></a>标题5</h5></blockquote>
+<h3 id="内容强调"><a href="#内容强调" class="headerlink" title="内容强调"></a>内容强调</h3><p>输入</p>
+<pre><code>**加粗**
+*斜体*
+***加粗斜体***
+~~删除~~
+`高亮`
+</code></pre><p>显示</p>
+<blockquote>
+<p><strong>加粗</strong><br><em>斜体</em><br><strong><em>加粗斜体</em></strong><br><del>删除</del><br><code>高亮</code></p>
+</blockquote>
+<h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><h4 id="标准方法"><a href="#标准方法" class="headerlink" title="标准方法"></a>标准方法</h4><p>输入</p>
+<pre><code>&gt; 每行开始都用&apos;&gt; &apos;
+&gt; 就像这样
+&gt; 两个回车结束引用
+</code></pre><p>输出</p>
+<blockquote>
+<p>每行开始都用’&gt; ‘<br>就像这样<br>两个回车结束引用</p>
+</blockquote>
+<h4 id="简单方法"><a href="#简单方法" class="headerlink" title="简单方法"></a>简单方法</h4><p>输入</p>
+<pre><code>&gt; 第一行用&apos;&gt; &quot;
+还在引用
+两个回车结束引用
+</code></pre><p>输出</p>
+<blockquote>
+<p>第一行用’&gt; “<br>还在引用<br>两个回车结束引用</p>
+</blockquote>
+<h4 id="嵌套引用"><a href="#嵌套引用" class="headerlink" title="嵌套引用"></a>嵌套引用</h4><pre><code>&gt; 一级引用
+&gt;&gt; 二级引用
+&gt;&gt;&gt; 三级引用
+没有空行则不会退出当前引用层级
+&gt;&gt; 就算加了降级引用标志也一样
+
+&gt;&gt; 加了空行才能退出当前层级然后降级哦
+
+&gt; 依然是两个回车退出引用
+
+
+不在引用范围内啦
+</code></pre><p>输出</p>
+<blockquote>
+<p>一级引用</p>
+<blockquote>
+<p>二级引用</p>
+<blockquote>
+<p>三级引用<br>没有空行则不会退出当前引用层级<br>就算加了降级引用标志也一样</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>加了空行才能退出当前层级然后降级哦</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>依然是两个回车退出引用</p>
+</blockquote>
+<p>不在引用范围内啦</p>
+
           
         
       
