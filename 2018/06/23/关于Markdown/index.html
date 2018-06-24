@@ -87,10 +87,12 @@
 <meta property="og:site_name" content="Garion Clay">
 <meta property="og:description" content="Markdown是什么Markdown是一款轻量级的“标记语言”。 Markdown的优势 可以让你专注于文字内容而不是排版样式 纯文本内容，兼容所有文字编辑器和字处理软件 直观，可读性高  Markdown的特性 自动生成目录 代码块高亮 引用展示 表格插入 图片插入 强调显示 列表显示 自动URL链接  语法简明概述 分段两个回车 换行两个空格+回车 标题#~######，#的个数代表标题层级">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-06-24T10:36:02.664Z">
+<meta property="og:image" content="http://garionclay.github.io/images/avatar.jpg">
+<meta property="og:updated_time" content="2018-06-24T14:23:09.778Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关于Markdown">
 <meta name="twitter:description" content="Markdown是什么Markdown是一款轻量级的“标记语言”。 Markdown的优势 可以让你专注于文字内容而不是排版样式 纯文本内容，兼容所有文字编辑器和字处理软件 直观，可读性高  Markdown的特性 自动生成目录 代码块高亮 引用展示 表格插入 图片插入 强调显示 列表显示 自动URL链接  语法简明概述 分段两个回车 换行两个空格+回车 标题#~######，#的个数代表标题层级">
+<meta name="twitter:image" content="http://garionclay.github.io/images/avatar.jpg">
 
 
 
@@ -397,7 +399,7 @@
 <li>强调<code>**text**</code>,<code>__text__</code>,<code>*text*</code>,<code>~~text~~</code></li>
 <li>引用<code>&gt;</code>,注意需要在其后加一个空格</li>
 <li>表格<code>-</code>和<code>|</code>分割行和列，<code>:</code>控制对齐方式</li>
-<li>代码块<code>四个空格</code>开头，或者使用<code>```</code>code<code>```</code></li>
+<li>代码块<code>四个空格</code>开头，或者用三个反引号(`)在两端包裹代码块</li>
 <li>链接<code>[文字](地址)</code></li>
 <li>图片<code>![图片说明](图片地址)</code></li>
 <li>列表<code>*</code>, <code>+</code>,<code>-</code>,<code>1.</code>任选其一，后面跟一个空格</li>
@@ -428,12 +430,12 @@
 <p>每行开始都用’&gt; ‘<br>就像这样<br>两个回车结束引用</p>
 </blockquote>
 <h4 id="简单方法"><a href="#简单方法" class="headerlink" title="简单方法"></a>简单方法</h4><p>输入</p>
-<pre><code>&gt; 第一行用&apos;&gt; &quot;
+<pre><code>&gt; 第一行用&apos;&gt; &apos;
 还在引用
 两个回车结束引用
 </code></pre><p>输出</p>
 <blockquote>
-<p>第一行用’&gt; “<br>还在引用<br>两个回车结束引用</p>
+<p>第一行用’&gt; ‘<br>还在引用<br>两个回车结束引用</p>
 </blockquote>
 <h4 id="嵌套引用"><a href="#嵌套引用" class="headerlink" title="嵌套引用"></a>嵌套引用</h4><pre><code>&gt; 一级引用
 &gt;&gt; 二级引用
@@ -466,6 +468,72 @@
 <p>依然是两个回车退出引用</p>
 </blockquote>
 <p>不在引用范围内啦</p>
+<h3 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h3><p>输入：</p>
+<pre><code>列1   | 列2 | 列3 
+---- | --- | ---- 
+第1行 | 12  | 13  
+第2行 | 22  | 23  
+第3行 | 32  | 33 
+</code></pre><p>输出：</p>
+<table>
+<thead>
+<tr>
+<th>列1</th>
+<th>列2</th>
+<th>列3 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第1行</td>
+<td>12</td>
+<td>13  </td>
+</tr>
+<tr>
+<td>第2行</td>
+<td>22</td>
+<td>23  </td>
+</tr>
+<tr>
+<td>第3行</td>
+<td>32</td>
+<td>33 </td>
+</tr>
+</tbody>
+</table>
+<p>使用“:”来设置对齐方式<br>输入：</p>
+<pre><code>| 左对齐 | 右对齐 | 居中 |
+| :-------- | -------:| :--: |
+| Computer  | 5000 元 |  1台 |
+| Phone | 1999 元 |  1部 |
+</code></pre><p>输出：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">左对齐</th>
+<th style="text-align:center">居中</th>
+<th style="text-align:right">右对齐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">row1</td>
+<td style="text-align:center">12</td>
+<td style="text-align:right">13</td>
+</tr>
+<tr>
+<td style="text-align:left">row2</td>
+<td style="text-align:center">22</td>
+<td style="text-align:right">23</td>
+</tr>
+</tbody>
+</table>
+<h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><p>输入：</p>
+<pre><code>[首页](http://garionclay.github.io)
+</code></pre><p>输出：<br><a href="http://garionclay.github.io" target="_blank" rel="noopener">首页</a></p>
+<h3 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h3><p>输入：</p>
+<pre><code>![头像](http://garionclay.github.io/images/avatar.jpg)
+</code></pre><p>输出：<br><img src="http://garionclay.github.io/images/avatar.jpg" alt="头像"></p>
 
       
     </div>
@@ -666,7 +734,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Markdown是什么"><span class="nav-number">1.</span> <span class="nav-text">Markdown是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Markdown的优势"><span class="nav-number">2.</span> <span class="nav-text">Markdown的优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Markdown的特性"><span class="nav-number">3.</span> <span class="nav-text">Markdown的特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语法简明概述"><span class="nav-number">4.</span> <span class="nav-text">语法简明概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标题"><span class="nav-number">4.1.</span> <span class="nav-text">标题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#标题4"><span class="nav-number">4.1.1.</span> <span class="nav-text">标题4</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#标题5"><span class="nav-number">4.1.1.1.</span> <span class="nav-text">标题5</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内容强调"><span class="nav-number">4.2.</span> <span class="nav-text">内容强调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用"><span class="nav-number">4.3.</span> <span class="nav-text">引用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#标准方法"><span class="nav-number">4.3.1.</span> <span class="nav-text">标准方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#简单方法"><span class="nav-number">4.3.2.</span> <span class="nav-text">简单方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#嵌套引用"><span class="nav-number">4.3.3.</span> <span class="nav-text">嵌套引用</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Markdown是什么"><span class="nav-number">1.</span> <span class="nav-text">Markdown是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Markdown的优势"><span class="nav-number">2.</span> <span class="nav-text">Markdown的优势</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Markdown的特性"><span class="nav-number">3.</span> <span class="nav-text">Markdown的特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语法简明概述"><span class="nav-number">4.</span> <span class="nav-text">语法简明概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#标题"><span class="nav-number">4.1.</span> <span class="nav-text">标题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#标题4"><span class="nav-number">4.1.1.</span> <span class="nav-text">标题4</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#标题5"><span class="nav-number">4.1.1.1.</span> <span class="nav-text">标题5</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内容强调"><span class="nav-number">4.2.</span> <span class="nav-text">内容强调</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#引用"><span class="nav-number">4.3.</span> <span class="nav-text">引用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#标准方法"><span class="nav-number">4.3.1.</span> <span class="nav-text">标准方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#简单方法"><span class="nav-number">4.3.2.</span> <span class="nav-text">简单方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#嵌套引用"><span class="nav-number">4.3.3.</span> <span class="nav-text">嵌套引用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#表格"><span class="nav-number">4.4.</span> <span class="nav-text">表格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#链接"><span class="nav-number">4.5.</span> <span class="nav-text">链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图片"><span class="nav-number">4.6.</span> <span class="nav-text">图片</span></a></li></ol></li></ol></div>
             
 
           </div>
