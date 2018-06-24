@@ -533,8 +533,52 @@
 <pre><code>[首页](http://garionclay.github.io)
 </code></pre><p>输出：<br><a href="http://garionclay.github.io" target="_blank" rel="noopener">首页</a></p>
 <h3 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h3><p>输入：</p>
-<pre><code>![头像](http://garionclay.github.io/images/avatar.jpg)
-</code></pre><p>输出：<br><img src="http://garionclay.github.io/images/avatar.jpg" alt="头像"></p>
+<pre><code>![头像](https://garionclay.github.io/images/avatar.png)
+</code></pre><p>输出：<br><img src="https://garionclay.github.io/images/avatar.png" alt="头像"></p>
+<h3 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h3><h4 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h4><p>输入</p>
+<pre><code>* 列表1
++ 列表2
+ * 二级列表1
+ + 二级列表2
+ - 二级列表3
+- 列表3
+</code></pre><p>输出：</p>
+<ul>
+<li>列表1</li>
+</ul>
+<ul>
+<li>列表2<ul>
+<li>二级列表1</li>
+</ul>
+<ul>
+<li>二级列表2</li>
+</ul>
+<ul>
+<li>二级列表3</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>列表3</li>
+</ul>
+<h4 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h4><p>输入：</p>
+<pre><code>1. 列表1
+2. 列表2
+    1. 二级列表1
+    2. 二级列表2
+    3. 二级列表3
+3. 列表3 
+</code></pre><p>输出：</p>
+<ol>
+<li>列表1</li>
+<li>列表2<ol>
+<li>二级列表1</li>
+<li>二级列表2</li>
+<li>二级列表3</li>
+</ol>
+</li>
+<li>列表3 </li>
+</ol>
 
           
         
