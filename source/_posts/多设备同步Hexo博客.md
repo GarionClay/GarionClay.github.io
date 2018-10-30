@@ -20,5 +20,24 @@ tags: ["Hexo","博客","NexT"]
 搞定以上步骤之后就可以在新电脑上同步啦。
 1. 环境安装。安装git,Node.js这个就不细说了Google下就有了。
 2. 打开gitbash，```git clone repoURL```克隆远程仓库。
-3. 
+3. cd到项目根目录下，安装环境：
 
+       npm install hexo
+       npm install
+       npm install hexo-deployer-git
+
+4. 然后就可以正常使用了。
+
+## 日常使用 ##
+就和使用git的方法一样。
+1. ```git pull```更新本地仓库
+2. 写文章
+3. 推送到远程仓库
+       git add -A
+       git commit -m "..."
+       git push origin hexo
+4. ```hexo g; hexo d;```发布文章并同步master分支
+5. 可以```hexo s```本地测试一下
+
+
+参考：https://www.zhihu.com/question/21193762
