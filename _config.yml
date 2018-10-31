@@ -81,3 +81,10 @@ deploy:
   type: git
   repository: git@github.com:GarionClay/GarionClay.github.io.git
   branch: master
+
+# hexo-tag-cloud
+# tag_cloud:
+    # textFont: Trebuchet MS, Helvetica
+    # textColour: \#00cdcd
+    # textHeight: 25
+    # outlineColour: \#E2E1D1
