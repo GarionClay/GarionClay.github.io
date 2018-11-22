@@ -139,7 +139,7 @@ $$
 
 即值域中未被利用的空间的期望。
 
-我们以第一个桶为例，第一次放置球时该桶未被放置的概率为$1-\frac{1}{N}$，到最后一次（M次）放置完毕后都没有放入球的概率为$(1-\frac{1}{N})^M$；桶的个数为N，因此空桶的期望为：
+我们以第一个桶为例，第一次放置球时该桶未被放置的概率为$1-\frac{1}{N}$，到最后一次（M次）放置完毕后都没有放入球的概率为$(1-\frac{1}{N})^M$；桶的个数为N，因此空桶的期望为（空桶个数是个二项分布）：
 $$
 E(空桶个数)=N(1-\frac{1}{N})^M=N(1-\frac{1}{N})^{-N(-\frac{M}{N})}=Ne^{-\frac{M}{N}}
 $$
@@ -149,7 +149,17 @@ $$
 $$
 进行了简化。当N很大时计算结果的误差很小。
 
-将$M=13180827\quad N=2^{30}$代入后可得，空桶的期望为1060641568
+将$M=13180827\quad N=2^{30}$代入后可得，**空桶的期望为1060641568**。
+
+计算这个期望的意义，一是接下来计算冲突次数的期望会用到，二是在于顺便计算出了**添加新的项时出现冲突的概率**：
+$$
+E(添加新的项出现冲突的概率)=1-(1-\frac{1}{N})^M=1-e^{-\frac M N}=1-e^{-f}
+$$
+式中$f$为装填因子：
+$$
+\text{load factor:}\quad f=\frac M N
+$$
+由此可见，在向哈希表中加入新的项时，出现冲突的概率只和装填因子有关。java的hashmap实现中，默认的最大装填因子为0.75，当$f=0.75$时这个概率为0.5276，这保证了在hashmap中添加新项时出现冲突的概率不超过0.5276。（对为什么这个取值是0.75感兴趣的话可以参考这篇文章：[为什么 java Hashmap 中的加载因子是默认为0.75](https://www.jianshu.com/p/dff8f4641814)）
 
 ### 冲突次数期望
 
@@ -191,7 +201,63 @@ $$
 
 ### 试验验证
 
-对于题目给出的13180827数据，用以下四个哈希函数做了试验，并统计了冲突次数。试验结果如下：
+对于题目给出的13180827数据，用以下几个哈希函数做了试验，并统计了冲突次数。测试代码如下：
+
+```python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import sys
+
+
+def TW6432_hash(val):
+    val = (~val) + (val << 18)
+    val = val ^ (val >> 31)
+    val = val * 21
+    val = val ^ (val >> 11)
+    val = val + (val << 6)
+    val = val ^ (val >> 22)
+    return val & 0x3FFFFFFF
+
+
+def java_hash(val):
+    val ^= val >> 32
+    val ^= (val >> 20) ^ (val >> 12)
+    val ^= (val >> 7) ^ (val >> 4)
+    return val & 0x3FFFFFFF
+
+
+def TW64shift(val):
+    val = (~val) + (val << 21)
+    val = val ^ (val >> 24)
+    val = (val + (val << 3)) + (val << 8)
+    val = val ^ (val >> 14)
+    val = (val + (val << 2)) + (val << 4)
+    val = val ^ (val >> 28)
+    val = val + (val << 31)
+    return val & 0x3FFFFFFF
+
+
+def test_hash(hash_func, infile):
+    of_name = 'result_' + hash_func.__name__
+    results = set()
+    with open(infile, 'r') as i_f, open(of_name, 'w') as o_f:
+        for line in i_f:
+            line = line.rstrip('\n')
+            long = int(line)
+            hash_ = hash_func(long)
+            results.add(hash_)
+            o_f.write(str(hash_)+'\n')
+    print hash_func.__name__ + ': {}'.format(len(results))
+
+if __name__ == '__main__':
+    file = sys.argv[1]
+    test_hash(TW6432_hash, file)
+    test_hash(java_hash, file)
+    test_hash(TW64shift, file)
+    exit(0)
+```
+
+试验结果如下：
 
 | 哈希函数      | 冲突次数     |
 | ------------- | ------------ |
@@ -211,6 +277,10 @@ $$
    已知自变量为10位十进制数，**后两位均为0**，要求将其映射到6位十进制数，那么显然可以除以100之后再去做哈希，相比于未知自变量的分布模式时只能考虑输入为任意10位十进制数的情况，储存空间的利用率可以更高。
 
 2. 在未知自变量分布模式的情况下，为了获得良好的性能，我们期望哈希函数能够在不同的自变量分布情况下，都将其均匀地映射到值域空间中。
+
+## 扩展：完美哈希
+
+待续
 
 ## 参考文章
 
