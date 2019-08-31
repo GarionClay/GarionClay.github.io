@@ -8,7 +8,7 @@ subtitle: 学而时习之
 description: 博学之，审问之，慎思之，明辨之，笃行之
 keywords:
 author: Garion Clay
-language: zh-Hans
+language: zh-CN
 timezone:
 
 # URL
@@ -73,7 +73,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: next
+theme: next-reloaded
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
