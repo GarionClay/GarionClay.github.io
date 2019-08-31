@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="问题定义推荐问题：实现一个自动预测用户对于某项物品喜爱程度的效用函数。资源汇总相关会议对于推荐系统领域，直接相关的会议不多，但由于推荐系统会涉及到数据挖掘、机器学习等方面的知识，并且推荐系统作为数据挖掘和机器学习的重要应用之一，同时推荐系统往更大的领域靠拢的话也属于人工智能的范畴，因此很多做推荐的学者把目光也瞄向了数据挖掘、机器学习和人工智能方面的会议。所以，如果想关注推荐系统的前沿，我们需要不仅">
+<meta name="keywords" content="算法,推荐系统,综述">
+<meta property="og:type" content="article">
+<meta property="og:title" content="推荐系统技术简介">
+<meta property="og:url" content="http://yoursite.com/2018/12/22/推荐系统技术调研/index.html">
+<meta property="og:site_name" content="Garion Clay">
+<meta property="og:description" content="问题定义推荐问题：实现一个自动预测用户对于某项物品喜爱程度的效用函数。资源汇总相关会议对于推荐系统领域，直接相关的会议不多，但由于推荐系统会涉及到数据挖掘、机器学习等方面的知识，并且推荐系统作为数据挖掘和机器学习的重要应用之一，同时推荐系统往更大的领域靠拢的话也属于人工智能的范畴，因此很多做推荐的学者把目光也瞄向了数据挖掘、机器学习和人工智能方面的会议。所以，如果想关注推荐系统的前沿，我们需要不仅">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-12-22T08:09:18.517Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="推荐系统技术简介">
+<meta name="twitter:description" content="问题定义推荐问题：实现一个自动预测用户对于某项物品喜爱程度的效用函数。资源汇总相关会议对于推荐系统领域，直接相关的会议不多，但由于推荐系统会涉及到数据挖掘、机器学习等方面的知识，并且推荐系统作为数据挖掘和机器学习的重要应用之一，同时推荐系统往更大的领域靠拢的话也属于人工智能的范畴，因此很多做推荐的学者把目光也瞄向了数据挖掘、机器学习和人工智能方面的会议。所以，如果想关注推荐系统的前沿，我们需要不仅">
+  <link rel="canonical" href="http://yoursite.com/2018/12/22/推荐系统技术调研/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>推荐系统技术简介 | Garion Clay</title>
+  <meta name="generator" content="Hexo 3.9.0">
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Garion Clay</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">学而时习之</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/22/推荐系统技术调研/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Garion Clay">
+      <meta itemprop="description" content="博学之，审问之，慎思之，明辨之，笃行之">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Garion Clay">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">推荐系统技术简介
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-22 12:32:09 / 修改时间：16:09:18" itemprop="dateCreated datePublished" datetime="2018-12-22T12:32:09+08:00">2018-12-22</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/" itemprop="url" rel="index"><span itemprop="name">算法</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/2018/12/22/推荐系统技术调研/" class="post-meta-item leancloud_visitors" data-flag-title="推荐系统技术简介" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2018/12/22/推荐系统技术调研/#comments" itemprop="discussionUrl"><span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/22/推荐系统技术调研/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="问题定义"><a href="#问题定义" class="headerlink" title="问题定义"></a>问题定义</h1><p>推荐问题：实现一个自动预测用户对于某项物品喜爱程度的效用函数。</p><h1 id="资源汇总"><a href="#资源汇总" class="headerlink" title="资源汇总"></a>资源汇总</h1><h2 id="相关会议"><a href="#相关会议" class="headerlink" title="相关会议"></a>相关会议</h2><p>对于推荐系统领域，直接相关的会议不多，但由于推荐系统会涉及到数据挖掘、机器学习等方面的知识，并且推荐系统作为数据挖掘和机器学习的重要应用之一，同时推荐系统往更大的领域靠拢的话也属于人工智能的范畴，因此很多做推荐的学者把目光也瞄向了数据挖掘、机器学习和人工智能方面的会议。所以，如果想关注推荐系统的前沿，我们需要不仅关注推荐系统年会，还需要关注其他与推荐挂钩的会议。</p><a id="more"></a>
+
+<ol>
+<li><strong>与推荐系统直接相关的会议</strong><br> <a href="http://link.zhihu.com/?target=https%3A//recsys.acm.org/" target="_blank" rel="noopener">RecSys</a> -The ACM Conference Series on Recommender Systems.</li>
+<li><strong>数据挖掘相关的会议</strong><br> <a href="http://link.zhihu.com/?target=http%3A//www.kdd.org/" target="_blank" rel="noopener">SIGKDD</a> - The ACM SIGKDD Conference on Knowledge Discovery and Data Mining.<br> <a href="http://link.zhihu.com/?target=http%3A//www.wsdm-conference.org/" target="_blank" rel="noopener">WSDM</a> - The International Conference on Web Search and Data Mining.<br> <a href="http://link.zhihu.com/?target=http%3A//cs.uvm.edu/%7Eicdm/" target="_blank" rel="noopener">ICDM</a> - The IEEE International Conference on Data Mining.<br> <a href="http://link.zhihu.com/?target=http%3A//www.siam.org/meetings/sdm19/" target="_blank" rel="noopener">SDM</a> -TheSIAM International Conference on Data Mining.</li>
+<li><strong>机器学习相关的会议</strong><br> <a href="http://link.zhihu.com/?target=https%3A//icml.cc/" target="_blank" rel="noopener">ICML</a> - The International Conference on Machine Learning.</li>
+<li><strong>信息检索相关的会议</strong><br> <a href="http://link.zhihu.com/?target=http%3A//sigir.org/" target="_blank" rel="noopener">SIGIR</a> - The ACM International Conference on Research and Development in Information Retrieval</li>
+<li><strong>数据库相关的会议</strong><br> <a href="http://link.zhihu.com/?target=http%3A//www.cikm2018.units.it/" target="_blank" rel="noopener">CIKM</a> - The ACM International Conference on Information and Knowledge Management.</li>
+<li><strong>Web相关的会议</strong><br> <a href="http://link.zhihu.com/?target=https%3A//www2018.thewebconf.org/" target="_blank" rel="noopener">WWW</a> - The International World Wide Web Conference.</li>
+<li><strong>人工智能相关的会议</strong><br> <a href="http://link.zhihu.com/?target=https%3A//aaai.org/Conferences/AAAI-18/" target="_blank" rel="noopener">AAAI</a> - The National Conference of the American Association for Artificial Intelligence.<br> <a href="http://link.zhihu.com/?target=http%3A//www.ijcai.org/" target="_blank" rel="noopener">IJCAI</a> - The International Joint Conference on Artificial Intelligence.</li>
+</ol>
+<h2 id="博客文章"><a href="#博客文章" class="headerlink" title="博客文章"></a>博客文章</h2><p><a href="https://buildingrecommenders.wordpress.com/2015/11/16/overview-of-recommender-algorithms-part-1/" target="_blank" rel="noopener">Building Recommenders</a><br><a href="http://blog.sciencenet.cn/blog-1225851-945334.html" target="_blank" rel="noopener">推荐系统综述（上面文章的中文版）</a></p>
+<h2 id="期刊文章、会议论文"><a href="#期刊文章、会议论文" class="headerlink" title="期刊文章、会议论文"></a>期刊文章、会议论文</h2><p><a href="https://www.slideshare.net/xamat/recsys-2014-tutorial-the-recommender-problem-revisited" target="_blank" rel="noopener">墙裂推荐：recsys-2014-tutorial-the-recommender-problem-revisited</a><br> <a href="http://wiki.xiaodutv.com/download/attachments/18455386/A%20literature%20review%20and%20classification%20of%20recommender%20systems%20research.pdf?version=1&modificationDate=1544087006662&api=v2" target="_blank" rel="noopener">A literature review and classification of recommender systems</a><br><a href="http://wiki.xiaodutv.com/download/attachments/18455386/The%20use%20of%20machine%20learning%20algorithms%20in%20recommender%20systems%20-%20A%20systematic%20review.pdf?version=1&modificationDate=1544087995229&api=v2" target="_blank" rel="noopener">The use of machine learning algorithms in recommender systems: A<br>systematic review</a></p>
+<h1 id="算法分类"><a href="#算法分类" class="headerlink" title="算法分类"></a>算法分类</h1><h2 id="协同过滤推荐算法（Collaborative-Filtering）"><a href="#协同过滤推荐算法（Collaborative-Filtering）" class="headerlink" title="协同过滤推荐算法（Collaborative Filtering）"></a>协同过滤推荐算法（Collaborative Filtering）</h2><h3 id="Memory-Based-CF"><a href="#Memory-Based-CF" class="headerlink" title="Memory Based CF"></a>Memory Based CF</h3><p>又可以分为基于用户的协同过滤算法和基于物品的协同过滤算法。</p>
+<h3 id="Model-Based-CF"><a href="#Model-Based-CF" class="headerlink" title="Model Based CF"></a>Model Based CF</h3><p>基于模型的协同过滤算法</p>
+<p>SVD算法（奇异值分解）</p>
+<p>RBM算法（受限玻尔兹曼机）</p>
+<p>聚类算法（Clustering）<br>　　LSH（Local-sensitive Hashing）<br>　　K-means及其变种<br>　　LDA<br>　　非参数贝叶斯聚类  </p>
+<p>关联规则（Association Rule）</p>
+<p>分类算法（Classifiers）</p>
+<ul>
+<li><p>逻辑回归（Logical Regression）</p>
+</li>
+<li><p>贝叶斯网络（Bayesian Network）</p>
+</li>
+<li><p>支持向量机(Support Vector Machine)</p>
+</li>
+<li><p>决策树(Decision Tree)</p>
+</li>
+<li><p>……</p>
+<p>这部分可以用于CF算法，也可以用于CB算法<br><strong>优点</strong>：用途广泛、可以和其他算法联合提高准确度<br><strong>缺点</strong>：需要相关度训练集、可能过拟合  </p>
+</li>
+</ul>
+<h3 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h3><p><strong>输入</strong> :仅仅依赖于惯用数据（例如评价、购买、下载等用户偏好行为）</p>
+<p><strong>优点</strong></p>
+<ul>
+<li>需要最小知识（minimum knowledge）</li>
+<li>大部分情况下效果足够好</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>稀疏性：在大数据集下用户重叠率很低（比如淘宝之类极大的商品集合）</li>
+<li>可计算性：领域计算在用户量和物品量增大时计算量都会增大</li>
+<li>冷启动问题</li>
+<li>需要标准化产品</li>
+<li>流行度偏见（Popularity Bias）：有长尾的时候表现不够好</li>
+<li>难以提供解释</li>
+</ul>
+<h2 id="基于内容的推荐算法（Content-based-Filtering）"><a href="#基于内容的推荐算法（Content-based-Filtering）" class="headerlink" title="基于内容的推荐算法（Content-based Filtering）"></a>基于内容的推荐算法（Content-based Filtering）</h2><p>向用户推荐和其过去喜欢项的内容（例如元数据、描述、话题等等）相似的项。</p>
+<h3 id="优缺点-1"><a href="#优缺点-1" class="headerlink" title="优缺点"></a>优缺点</h3><p><strong>输入</strong>：仅仅依赖于项和用户的内容/描述</p>
+<p><strong>优点</strong></p>
+<ul>
+<li>没有冷启动问题</li>
+<li>不需要惯用数据</li>
+<li>没有流行度偏见，可以推荐有罕见特性的项</li>
+<li>可以使用用户内容特性来提供解释</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li><p>项内容必须是机器可读的和有意义的</p>
+</li>
+<li><p>容易归档用户</p>
+</li>
+<li><p>很难有意外，缺少多样性</p>
+</li>
+<li><p>很难联合多个项的特性</p>
+</li>
+<li><p>容易过拟合</p>
+</li>
+</ul>
+<h2 id="混合推荐算法"><a href="#混合推荐算法" class="headerlink" title="混合推荐算法"></a>混合推荐算法</h2><p>简介：综合利用协同过滤推荐算法和基于内容的推荐算法各自的优点同时抵消各自的缺点</p>
+<p>类型：</p>
+<ul>
+<li>加权</li>
+<li>交换</li>
+<li>混合</li>
+<li>特性组合</li>
+<li>案例</li>
+<li>特征增强</li>
+<li>元层次</li>
+</ul>
+<p><strong>输入</strong>：同时使用用户和项的内容特性与惯用数据，同时从两种输入类型中获益</p>
+<h3 id="优缺点-2"><a href="#优缺点-2" class="headerlink" title="优缺点"></a>优缺点</h3><p><strong>优点</strong></p>
+<ul>
+<li>由于单独使用协同过滤推荐算法和基于内容的推荐算法</li>
+<li>没有冷启动问题</li>
+<li>没有流行度偏见，可推荐有罕见特性的项</li>
+<li>可产生意外，实现多样性</li>
+</ul>
+<p><strong>缺点</strong></p>
+<ul>
+<li>需要通过大量的工作才能得到正确的平衡</li>
+</ul>
+<h2 id="高级非传统算法"><a href="#高级非传统算法" class="headerlink" title="高级非传统算法"></a>高级非传统算法</h2><h3 id="Learning-to-Rank"><a href="#Learning-to-Rank" class="headerlink" title="Learning to Rank"></a>Learning to Rank</h3><p>将推荐问题理解为排名问题。损失函数可以从点、对、列表的角度出发来建立。</p>
+<h3 id="Similarity-（相似度）"><a href="#Similarity-（相似度）" class="headerlink" title="Similarity （相似度）"></a>Similarity （相似度）</h3><p>SimRank：基于二部图理论计算相似度矩阵，将不同层面的相似度矩阵（如元数据、用户行为数据）用回归或者MAB方法联合后作为最终相似度矩阵。</p>
+<h3 id="Deep-Learning-（深度学习）"><a href="#Deep-Learning-（深度学习）" class="headerlink" title="Deep Learning （深度学习）"></a>Deep Learning （深度学习）</h3><p>可以用于协同过滤方法，也可以用于基于内容的推荐算法</p>
+<h3 id="Social-and-Trust-based-Recommender"><a href="#Social-and-Trust-based-Recommender" class="headerlink" title="Social and Trust-based Recommender"></a>Social and Trust-based Recommender</h3><p>可以和协同过滤算法联合，在相似度计算时引入社会关系；也可以和机器学习方法联合，在正则化函数中引入社会关系。</p>
+<p>可以用人口统计学的方法进行分类推荐。</p>
+<h3 id="Page-Optimization-页面优化"><a href="#Page-Optimization-页面优化" class="headerlink" title="Page Optimization (页面优化)"></a>Page Optimization (页面优化)</h3><p>主要考虑页面的组织和用户的注意力在屏幕上的不同位置的分布之间的优化。</p>
+<h3 id="Tensor-Factorization-amp-Factorization-Machine-张量分解和因子分解机"><a href="#Tensor-Factorization-amp-Factorization-Machine-张量分解和因子分解机" class="headerlink" title="Tensor Factorization &amp; Factorization Machine (张量分解和因子分解机)"></a>Tensor Factorization &amp; Factorization Machine (张量分解和因子分解机)</h3><p>在诸如用户-资源-标签等多维度的场景中，数据可以用张量来表示（通常很稀疏），用张量方法将张量分解到低维空间，然后利用低维空间的方法（比如前面提到的基于二部图等的方法）进行推荐。</p>
+<h3 id="MAB-Explore-Exploit"><a href="#MAB-Explore-Exploit" class="headerlink" title="MAB Explore/Exploit"></a>MAB Explore/Exploit</h3><p>用多臂赌博机问题（Multi-armed bandit problem）中的Bandit算法去解决探索/利用（Explore/Exploit）问题，以及不同推荐策略的选择问题。</p>
+<h1 id="业界使用的算法"><a href="#业界使用的算法" class="headerlink" title="业界使用的算法"></a>业界使用的算法</h1><h2 id="阿里-Graph-Embedding"><a href="#阿里-Graph-Embedding" class="headerlink" title="阿里-Graph Embedding"></a>阿里-Graph Embedding</h2><p>主要思路：用降维方法去解决item量巨大的情况下直接运用CF算法会遇到的矩阵稀疏且计算量大的问题。</p>
+<p><a href="https://www.jiqizhixin.com/articles/2017-02-20-6" target="_blank" rel="noopener">https://www.jiqizhixin.com/articles/2017-02-20-6</a></p>
+<h2 id="阿里-基于图结构的实时推荐算法SWING"><a href="#阿里-基于图结构的实时推荐算法SWING" class="headerlink" title="阿里-基于图结构的实时推荐算法SWING"></a>阿里-基于图结构的实时推荐算法SWING</h2><p>主要思路：通过SWING算法解决传统的基于点的相似度算法去噪声能力弱的问题，并且这种方法对于网络结构的变化更为敏感。</p>
+<p><a href="https://www.codetd.com/article/3314539" target="_blank" rel="noopener">https://www.codetd.com/article/3314539</a></p>
+<h2 id="YouTube-视频推荐算法"><a href="#YouTube-视频推荐算法" class="headerlink" title="YouTube-视频推荐算法"></a>YouTube-视频推荐算法</h2><p>主要讲YouTube推荐算法的演变。</p>
+<p><a href="https://www.zhihu.com/question/20829671" target="_blank" rel="noopener">https://www.zhihu.com/question/20829671</a></p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><p><a href="https://zhuanlan.zhihu.com/p/43026153" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/43026153</a><br><a href="http://blog.sciencenet.cn/blog-1225851-945334.html" target="_blank" rel="noopener">http://blog.sciencenet.cn/blog-1225851-945334.html</a><br><a href="https://www.jiqizhixin.com/articles/2017-02-20-6" target="_blank" rel="noopener">https://www.jiqizhixin.com/articles/2017-02-20-6</a><br><a href="https://www.codetd.com/article/3314539" target="_blank" rel="noopener">https://www.codetd.com/article/3314539</a><br><a href="https://www.zhihu.com/question/20829671" target="_blank" rel="noopener">https://www.zhihu.com/question/20829671</a>  </p>
+<h1 id="一些科普文章"><a href="#一些科普文章" class="headerlink" title="一些科普文章"></a>一些科普文章</h1><p>感兴趣的话可以继续学习：</p>
+<p><a href="https://blog.csdn.net/guoxinian/article/details/62898742" target="_blank" rel="noopener">SVD算法</a><br><a href="https://blog.csdn.net/vivian_ll/article/details/78580677" target="_blank" rel="noopener">解决过拟合：正则化方式</a><br><a href="https://www.cnblogs.com/pinard/p/6362647.html" target="_blank" rel="noopener">SimRank算法简介</a>  </p>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/算法/" rel="tag"># 算法</a>
+            
+              <a href="/tags/推荐系统/" rel="tag"># 推荐系统</a>
+            
+              <a href="/tags/综述/" rel="tag"># 综述</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/11/18/对hash函数的一些认识/" rel="next" title="对哈希函数的一些认识">
+                  <i class="fa fa-chevron-left"></i> 对哈希函数的一些认识
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/01/13/面试题-两个玻璃球/" rel="prev" title="面试题- 两个玻璃球100层楼">
+                  面试题- 两个玻璃球100层楼 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    
+  <div class="comments" id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#问题定义"><span class="nav-number">1.</span> <span class="nav-text">问题定义</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#资源汇总"><span class="nav-number">2.</span> <span class="nav-text">资源汇总</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#相关会议"><span class="nav-number">2.1.</span> <span class="nav-text">相关会议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#博客文章"><span class="nav-number">2.2.</span> <span class="nav-text">博客文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#期刊文章、会议论文"><span class="nav-number">2.3.</span> <span class="nav-text">期刊文章、会议论文</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#算法分类"><span class="nav-number">3.</span> <span class="nav-text">算法分类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#协同过滤推荐算法（Collaborative-Filtering）"><span class="nav-number">3.1.</span> <span class="nav-text">协同过滤推荐算法（Collaborative Filtering）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Memory-Based-CF"><span class="nav-number">3.1.1.</span> <span class="nav-text">Memory Based CF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Model-Based-CF"><span class="nav-number">3.1.2.</span> <span class="nav-text">Model Based CF</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点"><span class="nav-number">3.1.3.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于内容的推荐算法（Content-based-Filtering）"><span class="nav-number">3.2.</span> <span class="nav-text">基于内容的推荐算法（Content-based Filtering）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#混合推荐算法"><span class="nav-number">3.3.</span> <span class="nav-text">混合推荐算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优缺点-2"><span class="nav-number">3.3.1.</span> <span class="nav-text">优缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高级非传统算法"><span class="nav-number">3.4.</span> <span class="nav-text">高级非传统算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Learning-to-Rank"><span class="nav-number">3.4.1.</span> <span class="nav-text">Learning to Rank</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Similarity-（相似度）"><span class="nav-number">3.4.2.</span> <span class="nav-text">Similarity （相似度）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deep-Learning-（深度学习）"><span class="nav-number">3.4.3.</span> <span class="nav-text">Deep Learning （深度学习）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Social-and-Trust-based-Recommender"><span class="nav-number">3.4.4.</span> <span class="nav-text">Social and Trust-based Recommender</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Page-Optimization-页面优化"><span class="nav-number">3.4.5.</span> <span class="nav-text">Page Optimization (页面优化)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tensor-Factorization-amp-Factorization-Machine-张量分解和因子分解机"><span class="nav-number">3.4.6.</span> <span class="nav-text">Tensor Factorization &amp; Factorization Machine (张量分解和因子分解机)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MAB-Explore-Exploit"><span class="nav-number">3.4.7.</span> <span class="nav-text">MAB Explore/Exploit</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#业界使用的算法"><span class="nav-number">4.</span> <span class="nav-text">业界使用的算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#阿里-Graph-Embedding"><span class="nav-number">4.1.</span> <span class="nav-text">阿里-Graph Embedding</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阿里-基于图结构的实时推荐算法SWING"><span class="nav-number">4.2.</span> <span class="nav-text">阿里-基于图结构的实时推荐算法SWING</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YouTube-视频推荐算法"><span class="nav-number">4.3.</span> <span class="nav-text">YouTube-视频推荐算法</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考文章"><span class="nav-number">5.</span> <span class="nav-text">参考文章</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#一些科普文章"><span class="nav-number">6.</span> <span class="nav-text">一些科普文章</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="Garion Clay">
+  <p class="site-author-name" itemprop="name">Garion Clay</p>
+  <div class="site-description" itemprop="description">博学之，审问之，慎思之，明辨之，笃行之</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/garionclay" title="GitHub &rarr; https://github.com/garionclay" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:dzc_dev@outlook.com" title="E-Mail &rarr; mailto:dzc_dev@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Garion Clay</span>
+</div>
+
+        
+
+
+
+
+
+
+  
+  <script>
+  function leancloudSelector(url) {
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = visitors.getAttribute('id').trim();
+      var title = visitors.getAttribute('data-flag-title').trim();
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+            
+              .catch(error => {
+                console.log('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return element.getAttribute('id').trim();
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.url;
+            var time = item.time;
+            leancloudSelector(url).innerText = time;
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=ucYMXFcF46NgMzPGVjCc7lV9-MdYXbMMI')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': 'ucYMXFcF46NgMzPGVjCc7lV9-MdYXbMMI',
+            'X-LC-Key': 'nzKf27zXyOMkcQkrdqF522Ma',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        const localhost = /http:\/\/(localhost|127.0.0.1|0.0.0.0)/;
+        if (localhost.test(document.URL)) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+<script src="/js/utils.js?v=7.3.0"></script><script src="/js/motion.js?v=7.3.0"></script>
+<script src="/js/schemes/muse.js?v=7.3.0"></script>
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://garionclay.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  function disqus_config() {
+    this.page.url = "http://yoursite.com/2018/12/22/推荐系统技术调研/";
+    this.page.identifier = "2018/12/22/推荐系统技术调研/";
+    this.page.title = '推荐系统技术简介';};
+  function loadComments() {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://garionclay.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  }
+    window.addEventListener('load', loadComments, false);
+  
+</script>
+
+</body>
+</html>

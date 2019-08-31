@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: '',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="哈希函数的定义 A hash function usually means a function that compresses, meaning the output is shorter than the input. Often, such a function takes an input of arbitrary or almost arbitrary length to one who">
+<meta name="keywords" content="Hash,算法,概率">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对哈希函数的一些认识">
+<meta property="og:url" content="http://yoursite.com/2018/11/18/对hash函数的一些认识/index.html">
+<meta property="og:site_name" content="Garion Clay">
+<meta property="og:description" content="哈希函数的定义 A hash function usually means a function that compresses, meaning the output is shorter than the input. Often, such a function takes an input of arbitrary or almost arbitrary length to one who">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-31T06:27:03.298Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="对哈希函数的一些认识">
+<meta name="twitter:description" content="哈希函数的定义 A hash function usually means a function that compresses, meaning the output is shorter than the input. Often, such a function takes an input of arbitrary or almost arbitrary length to one who">
+  <link rel="canonical" href="http://yoursite.com/2018/11/18/对hash函数的一些认识/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>对哈希函数的一些认识 | Garion Clay</title>
+  <meta name="generator" content="Hexo 3.9.0">
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Garion Clay</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">学而时习之</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+  </ul>
+
+    
+
+</nav>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/18/对hash函数的一些认识/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Garion Clay">
+      <meta itemprop="description" content="博学之，审问之，慎思之，明辨之，笃行之">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Garion Clay">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">对哈希函数的一些认识
+
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-18 22:15:09" itemprop="dateCreated datePublished" datetime="2018-11-18T22:15:09+08:00">2018-11-18</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-31 14:27:03" itemprop="dateModified" datetime="2019-08-31T14:27:03+08:00">2019-08-31</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/算法/" itemprop="url" rel="index"><span itemprop="name">算法</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span id="/2018/11/18/对hash函数的一些认识/" class="post-meta-item leancloud_visitors" data-flag-title="对哈希函数的一些认识" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+          
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+        
+      
+      <span class="post-meta-item-text">Disqus：</span>
+    
+    <a title="disqus" href="/2018/11/18/对hash函数的一些认识/#comments" itemprop="discussionUrl"><span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/11/18/对hash函数的一些认识/" itemprop="commentCount"></span></a>
+  </span>
+  
+  
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="哈希函数的定义"><a href="#哈希函数的定义" class="headerlink" title="哈希函数的定义"></a>哈希函数的定义</h2><blockquote>
+<p>A hash function usually means a function that compresses, meaning the output is shorter than the input. Often, such a function takes an input of arbitrary or almost arbitrary length to one whose length is a fixed number.</p>
+</blockquote><a id="more"></a>
+<p>一般来说，哈希函数是一个将任意长度（或者近乎任意长度）的输入映射到固定长度的值的函数。</p>
+<h2 id="哈希函数的应用"><a href="#哈希函数的应用" class="headerlink" title="哈希函数的应用"></a>哈希函数的应用</h2><p>制造工具的目的在于使用。哈希函数的出现主要是为了解决这样的问题：</p>
+<ol>
+<li>稀疏数据的储存和检索：分布范围大但密度稀疏的数据采用连续储存的方式对空间造成极大的浪费（考虑身份证号的储存为例），采用哈希表技术，利用哈希函数将关键码映射到有限空间进行储存和检索可以解决这类问题。</li>
+<li>文件的完整性检查</li>
+<li>消息认证</li>
+<li>进行安全性检查等</li>
+</ol>
+<h2 id="哈希函数的特点"><a href="#哈希函数的特点" class="headerlink" title="哈希函数的特点"></a>哈希函数的特点</h2><ol>
+<li>哈希函数的输入为任意长度的数据</li>
+<li>哈希函数的输出为固定长度的值</li>
+<li>哈希函数的计算可以通过硬件或者软件加以实现</li>
+</ol>
+<p>从数学的角度来看，哈希函数是一个定义域远大于值域的函数，因此哈希函数一定不是一个单射。多个输入被映射到一个哈希值的情况被称为碰撞（或者冲突）。</p>
+<h2 id="哈希函数的设计"><a href="#哈希函数的设计" class="headerlink" title="哈希函数的设计"></a>哈希函数的设计</h2><h3 id="设计的关键"><a href="#设计的关键" class="headerlink" title="设计的关键"></a>设计的关键</h3><ol>
+<li>对于散列表来说，碰撞的增加会导致散列表性能的逐步下降，对于安全认证等来说碰撞则意味着不安全，因此哈希函数设计的关键之一在于<strong>尽可能减小冲突</strong>。</li>
+<li>显然，当函数将输入<strong>映射到值域中尽可能大的部分</strong>时，冲突的概率也会降低。</li>
+<li>不同输入的哈希值<strong>在值域中均匀分布</strong>，有利于减少冲突：若哈希值的分布在值域中有所集中，那么这一部分就很容易出现冲突。但事实上我们总能构造一组输入，使得这一组输入的哈希值集中在值域的某一部分——设计的关键在于，对于构造出的哈希函数，我们构造的（造成冲突的）输入应该尽可能和实际使用中会出现的输入没有交集。</li>
+<li>实际使用中，不同自变量变动的部分常常很小，为了达到以上性质，哈希函数应该<strong>对于自变量的变化极其敏感</strong>：自变量任何微小的变化都应该导致哈希值的巨大变化。</li>
+<li>而在另一些使用场景中，需要能够快速查找到与某个数据相近的数据，因此希望其哈希值也相近，这样的哈希函数设计与上一条中的刚好相反，例如局部敏感哈希（LSH）。</li>
+<li>在一些使用场景中（比如哈希表），要求哈希值的计算应该<strong>尽可能高效</strong>，以保证效率。</li>
+</ol>
+<h3 id="一些设计技巧"><a href="#一些设计技巧" class="headerlink" title="一些设计技巧"></a>一些设计技巧</h3><ol>
+<li><p>处理器对于<strong>位运算</strong>的计算远比其他类型的计算快，因此很多哈希算法中大量使用了位运算来保证计算效率。</p>
+</li>
+<li><p>Thomas Wang 认为一个好的哈希函数应该容易造成雪崩效应。这里的雪崩效应是从比特位的角度出发的，它指的是，输入值1bit位的变化会造成输出值1/2的bit位发生变化。位运算中的加减、异或、取反和移位等操作都比较容易引起此类变化。</p>
+</li>
+<li><p>常常需要将哈希值的结果限定在某一特定长度之内，这一工作可以通过取模运算完成。当限定长度为2的幂时，取模操作可以进一步简化为按位与<code>&amp;</code>运算：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># length = 2 ** n</span></span><br><span class="line">h %= length</span><br><span class="line">h &amp;= length - <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>在length为2的幂时，以上两条语句的计算效果是完全相同的。这也是很多语言中hashmap的长度取为2的幂的原因之一。</p>
+</li>
+<li><p>关于位运算的一些注意事项：</p>
+<ol>
+<li>任何一个数与另一个数异或两次等于其本身。因此设计函数时尽量避免与重复的部分做异或。</li>
+<li>右移位操作意味的低位数据的丢失，定长整数的左移位操作意味着高位数据的丢失。</li>
+<li>Python3中的int是不定长的，需要自己进行截断。</li>
+</ol>
+</li>
+</ol>
+<h2 id="哈希函数示例"><a href="#哈希函数示例" class="headerlink" title="哈希函数示例"></a>哈希函数示例</h2><h3 id="Java的HashMap实现中使用的哈希函数"><a href="#Java的HashMap实现中使用的哈希函数" class="headerlink" title="Java的HashMap实现中使用的哈希函数"></a>Java的HashMap实现中使用的哈希函数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//计算hash值的方法 通过键的hashCode来计算</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(<span class="keyword">int</span> h)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// This function ensures that hashCodes that differ only by</span></span><br><span class="line">    <span class="comment">// constant multiples at each bit position have a bounded</span></span><br><span class="line">    <span class="comment">// number of collisions (approximately 8 at default load factor).</span></span><br><span class="line">    h ^= (h &gt;&gt;&gt; <span class="number">20</span>) ^ (h &gt;&gt;&gt; <span class="number">12</span>);</span><br><span class="line">    <span class="keyword">return</span> h ^ (h &gt;&gt;&gt; <span class="number">7</span>) ^ (h &gt;&gt;&gt; <span class="number">4</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>函数的输入为对象的hashCode，输出为哈希值，均为32位整数。这个哈希函数用了移位<code>&gt;&gt;&gt;</code>和异或<code>^</code>操作，将原hash值与其右移20位和12位的结果做异或，然后再向右移位7和4重复一次。这些操作的目的在于尽可能通过哈希函数将输入中可能存在的规律消除（个人想法，欢迎指正）。</p>
+<h3 id="Thomas-Wang‘s-32-bit-MixFunction"><a href="#Thomas-Wang‘s-32-bit-MixFunction" class="headerlink" title="Thomas Wang‘s 32 bit MixFunction"></a>Thomas Wang‘s 32 bit MixFunction</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hash32shift</span><span class="params">(<span class="keyword">int</span> key)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  key = ~key + (key &lt;&lt; <span class="number">15</span>); <span class="comment">// key = (key &lt;&lt; 15) - key - 1;</span></span><br><span class="line">  key = key ^ (key &gt;&gt;&gt; <span class="number">12</span>);</span><br><span class="line">  key = key + (key &lt;&lt; <span class="number">2</span>);</span><br><span class="line">  key = key ^ (key &gt;&gt;&gt; <span class="number">4</span>);</span><br><span class="line">  key = key * <span class="number">2057</span>; <span class="comment">// key = (key + (key &lt;&lt; 3)) + (key &lt;&lt; 11);</span></span><br><span class="line">  key = key ^ (key &gt;&gt;&gt; <span class="number">16</span>);</span><br><span class="line">  <span class="keyword">return</span> key;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这一算法进行了更为复杂的变换，以消除输入中可能存在的规律。</p>
+<p>值得一提的是这个函数是从32位空间到32位空间的哈希函数，其定义域和值域是相同的——这意味着该函数是可以设计成单射，可以是可逆的，而可逆意味着冲突的消除。以上运算中的常数取得合适时，该函数的确是可逆函数，这也是Thomas的设计初衷：哈希函数负责将输入均匀而可逆的映射到值空间，实际储存空间的限制交给具体的使用者去考虑（比如通过简单的取模操作来进行限制）。</p>
+<p>参考文章3中还介绍了64位数映射到32位数的哈希函数以及64位的MixFunction，也是类似的思想，可以参考。</p>
+<h2 id="哈希函数中的概率问题"><a href="#哈希函数中的概率问题" class="headerlink" title="哈希函数中的概率问题"></a>哈希函数中的概率问题</h2><h3 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h3><p>给定问题：设计哈希函数，将64位int的baishiid映射到30bit的空间中，评价该哈希函数的性质是否足够好。给定的样本数据为13180827（约为2的23次幂）个，baishiid已经做过去重。</p>
+<p>我们评价哈希函数性质是否足够好的指标为：使用该哈希函数，造成的冲突数量是否已经达到了最优的状况？</p>
+<p>具体分析方法如下：</p>
+<ol>
+<li>假设我们对于输入中可能存在的规律并不了解，因而不能以此作为依据设计性能更加良好的哈希函数。这种情况下，能做到的最好的哈希函数，我们期望其输出总是均匀分布在值域（2的30次方）中。</li>
+<li>把值空间看做2的30次方个桶。假设已经找到了该最优哈希函数，那么对于我们给定的输入，每个哈希值落在每个桶中的概率是相同的。</li>
+<li>于是该问题变成：<strong>在2的30次方个桶中放置13180827个球，每个球出现在每个桶中的概率均等，每个桶可以放置的球没有上限，每个球出现在每个桶中的概率彼此独立，求桶中多出的球的数目（即冲突次数）的期望？</strong></li>
+</ol>
+<p>进一步把问题一般化，在N个桶中放置M(M&lt;=N)个球，每个球出现在每个桶中的概率均等，每个桶可以放置的球没有上限，每个球出现在每个桶中的概率彼此独立，求桶中多出的球的数目（即冲突次数）的期望？</p>
+<p>在求解上面问题之前，先看一些其他问题的概率。</p>
+<h3 id="每个桶只放一个球的概率"><a href="#每个桶只放一个球的概率" class="headerlink" title="每个桶只放一个球的概率"></a>每个桶只放一个球的概率</h3><p>即不会出现哈希碰撞的概率。</p>
+<p>放置第一个球时，一定不会冲突，概率为$\frac{N}{N}$，放置第二个球时，不冲突的概率为$\frac{N-1}{N}$；以此类推，可得放完所有求都未发生冲突的概率：<br>$$<br>P(未发生冲突的概率)=\frac{N}{N}\times\frac{N-1}{N}\times\frac{N-2}{N}\times\cdots\times\frac{N-(M-1)}{N}<br>$$<br>这个概率的计算很难完成，我们需要对其进行简化。利用$y=e^{-x}$的泰勒展开式:<br>$$<br>e^{-x}=1-x+\frac{1}{2!}x^2-\frac{1}{3!}x^3+\frac{1}{4!}x^4-\cdots\cdots<br>$$<br>当x很小时，有$1-x=e^{-x}$，因此有<br>$$<br>P(未发生冲突的概率)=e^{-\frac{1}{N}-\frac{2}{N}-\cdots-\frac{M-1}{N}}=e^{-\frac{M(M-1)}{2N}}<br>$$<br>到这里我们得到了哈希函数出现冲突概率的公式，将$M=13180827\quad N=2^{30}$代入，可求得，这个值几乎等于1。也就是说，<strong>在题目给定的条件下，试图设计一个完全无冲突的哈希函数是不现实的</strong>。</p>
+<h3 id="空桶的期望"><a href="#空桶的期望" class="headerlink" title="空桶的期望"></a>空桶的期望</h3><p>即值域中未被利用的空间的期望。</p>
+<p>我们以第一个桶为例，第一次放置球时该桶未被放置的概率为$1-\frac{1}{N}$，到最后一次（M次）放置完毕后都没有放入球的概率为$(1-\frac{1}{N})^M$；桶的个数为N，因此空桶的期望为（空桶个数是个二项分布）：<br>$$<br>E(空桶个数)=N(1-\frac{1}{N})^M=N(1-\frac{1}{N})^{-N(-\frac{M}{N})}=Ne^{-\frac{M}{N}}<br>$$<br>这里利用<br>$$<br>\lim_{x\to-\infty} (1+\frac{1}{x})^{x}=e<br>$$<br>进行了简化。当N很大时计算结果的误差很小。</p>
+<p>将$M=13180827\quad N=2^{30}$代入后可得，<strong>空桶的期望为1060641568</strong>。</p>
+<p>计算这个期望的意义，一是接下来计算冲突次数的期望会用到，二是在于顺便计算出了<strong>添加新的项时出现冲突的概率</strong>：<br>$$<br>E(添加新的项出现冲突的概率)=1-(1-\frac{1}{N})^M=1-e^{-\frac M N}=1-e^{-f}<br>$$<br>式中$f$为装填因子：<br>$$<br>\text{load factor:}\quad f=\frac M N<br>$$<br>由此可见，在向哈希表中加入新的项时，出现冲突的概率只和装填因子有关。java的hashmap实现中，默认的最大装填因子为0.75，当$f=0.75$时这个概率为0.5276，这保证了在hashmap中添加新项时出现冲突的概率不超过0.5276。（对为什么这个取值是0.75感兴趣的话可以参考这篇文章：<a href="https://www.jianshu.com/p/dff8f4641814" target="_blank" rel="noopener">为什么 java Hashmap 中的加载因子是默认为0.75</a>）</p>
+<h3 id="冲突次数期望"><a href="#冲突次数期望" class="headerlink" title="冲突次数期望"></a>冲突次数期望</h3><p>每个baishiid都不同，因此只要一个id被hash到已经用过的桶中就是一次冲突，因此冲突次数=M-被占用的桶数。而被占用的桶数又等于桶的总数减去空桶数目，因此可知：<br>$$<br>E(冲突次数)=M-(N-Ne^{-\frac{M}{N}})<br>$$<br>代入后计算得到，冲突次数的期望为80571。</p>
+<h3 id="每个桶至少有一个球时球的总数的期望"><a href="#每个桶至少有一个球时球的总数的期望" class="headerlink" title="每个桶至少有一个球时球的总数的期望"></a>每个桶至少有一个球时球的总数的期望</h3><p>即100%出现冲突时，已被哈希的输入的期望：当M为多少时，每个桶中至少有一个球？</p>
+<p>用$X_i$表示从第一次占用$i-1$个桶到第一次占用$i$个桶之间放入的球的个数。$X_1$表示从所有桶都为空到第一次占用一个桶时放入球的总数，显然$X_1=1$；在已经占用$i-1$个桶的情况下，每次放球放进新桶的概率为$p=\frac{N-(i-1)}{N}$，因此$X_i$的期望为：<br>$$<br>E(X_i)=\frac{1}{p}=\frac{N}{N-i+1}<br>$$<br>每个桶都填满需要放入的球数记为$X$，则有<br>$$<br>X=X_1+X_2+\cdots+X_N<br>$$<br>于是有<br>$$<br>\begin{align}<br>E(X)&amp;=\sum_{j=1}^{N}E(X_j)=\sum_{j=1}^{N}\frac{N}{N-j+1}\<br>&amp;=N\sum_{j=1}^{N}\frac{1}{N-j+1}\<br>&amp;=N\sum_{i=1}^{N}\frac{1}{i}\<br>\end{align}<br>$$<br>后面和求和项为调和级数：<br>$$<br>\sum_{i=1}^{N}\frac{1}{i}=\ln N+C+\varepsilon_n<br>$$<br>其中$C=0.557 215\cdots$为欧拉常数。因此有<br>$$<br>E(X)=O(N\ln N)<br>$$<br>由此可见，如果我们在所有桶都满的时候才对hashmap进行扩容，扩容时的数据量的期望在$N\ln N$这个量级。</p>
+<h3 id="试验验证"><a href="#试验验证" class="headerlink" title="试验验证"></a>试验验证</h3><p>对于题目给出的13180827数据，用以下几个哈希函数做了试验，并统计了冲突次数。测试代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TW6432_hash</span><span class="params">(val)</span>:</span></span><br><span class="line">    val = (~val) + (val &lt;&lt; <span class="number">18</span>)</span><br><span class="line">    val = val ^ (val &gt;&gt; <span class="number">31</span>)</span><br><span class="line">    val = val * <span class="number">21</span></span><br><span class="line">    val = val ^ (val &gt;&gt; <span class="number">11</span>)</span><br><span class="line">    val = val + (val &lt;&lt; <span class="number">6</span>)</span><br><span class="line">    val = val ^ (val &gt;&gt; <span class="number">22</span>)</span><br><span class="line">    <span class="keyword">return</span> val &amp; <span class="number">0x3FFFFFFF</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">java_hash</span><span class="params">(val)</span>:</span></span><br><span class="line">    val ^= val &gt;&gt; <span class="number">32</span></span><br><span class="line">    val ^= (val &gt;&gt; <span class="number">20</span>) ^ (val &gt;&gt; <span class="number">12</span>)</span><br><span class="line">    val ^= (val &gt;&gt; <span class="number">7</span>) ^ (val &gt;&gt; <span class="number">4</span>)</span><br><span class="line">    <span class="keyword">return</span> val &amp; <span class="number">0x3FFFFFFF</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">TW64shift</span><span class="params">(val)</span>:</span></span><br><span class="line">    val = (~val) + (val &lt;&lt; <span class="number">21</span>)</span><br><span class="line">    val = val ^ (val &gt;&gt; <span class="number">24</span>)</span><br><span class="line">    val = (val + (val &lt;&lt; <span class="number">3</span>)) + (val &lt;&lt; <span class="number">8</span>)</span><br><span class="line">    val = val ^ (val &gt;&gt; <span class="number">14</span>)</span><br><span class="line">    val = (val + (val &lt;&lt; <span class="number">2</span>)) + (val &lt;&lt; <span class="number">4</span>)</span><br><span class="line">    val = val ^ (val &gt;&gt; <span class="number">28</span>)</span><br><span class="line">    val = val + (val &lt;&lt; <span class="number">31</span>)</span><br><span class="line">    <span class="keyword">return</span> val &amp; <span class="number">0x3FFFFFFF</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">test_hash</span><span class="params">(hash_func, infile)</span>:</span></span><br><span class="line">    of_name = <span class="string">'result_'</span> + hash_func.__name__</span><br><span class="line">    results = set()</span><br><span class="line">    <span class="keyword">with</span> open(infile, <span class="string">'r'</span>) <span class="keyword">as</span> i_f, open(of_name, <span class="string">'w'</span>) <span class="keyword">as</span> o_f:</span><br><span class="line">        <span class="keyword">for</span> line <span class="keyword">in</span> i_f:</span><br><span class="line">            line = line.rstrip(<span class="string">'\n'</span>)</span><br><span class="line">            long = int(line)</span><br><span class="line">            hash_ = hash_func(long)</span><br><span class="line">            results.add(hash_)</span><br><span class="line">            o_f.write(str(hash_)+<span class="string">'\n'</span>)</span><br><span class="line">    <span class="keyword">print</span> hash_func.__name__ + <span class="string">': &#123;&#125;'</span>.format(len(results))</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    file = sys.argv[<span class="number">1</span>]</span><br><span class="line">    test_hash(TW6432_hash, file)</span><br><span class="line">    test_hash(java_hash, file)</span><br><span class="line">    test_hash(TW64shift, file)</span><br><span class="line">    exit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>试验结果如下：</p>
+<table>
+<thead>
+<tr>
+<th>哈希函数</th>
+<th>冲突次数</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>最优情况</td>
+<td>$E(X)=80571$</td>
+</tr>
+<tr>
+<td>64to32mix</td>
+<td>79940</td>
+</tr>
+<tr>
+<td>java_hash</td>
+<td>81093</td>
+</tr>
+<tr>
+<td>Thomas64shift</td>
+<td>80858</td>
+</tr>
+</tbody></table>
+<p>可见Thomas Wang’s 64 bit to 32 bit Hash Functions 效果已经很好了。</p>
+<h2 id="解决冲突"><a href="#解决冲突" class="headerlink" title="解决冲突"></a>解决冲突</h2><p>从以上概率分析的基础上可知，如果要哈希函数出现冲突的概率小于（待续）</p>
+<h2 id="需要注意的问题"><a href="#需要注意的问题" class="headerlink" title="需要注意的问题"></a>需要注意的问题</h2><ol>
+<li><p>如果我们能够知道自变量中存在的规律（模式），那么就有可能设计出更加高效的哈希函数。以上讨论均基于自变量的具体分布未知的情况下最优的结果。</p>
+<p>考虑以下情况：</p>
+<p>已知自变量为10位十进制数，<strong>后两位均为0</strong>，要求将其映射到6位十进制数，那么显然可以除以100之后再去做哈希，相比于未知自变量的分布模式时只能考虑输入为任意10位十进制数的情况，储存空间的利用率可以更高。</p>
+</li>
+<li><p>在未知自变量分布模式的情况下，为了获得良好的性能，我们期望哈希函数能够在不同的自变量分布情况下，都将其均匀地映射到值域空间中。</p>
+</li>
+</ol>
+<h2 id="扩展：完美哈希"><a href="#扩展：完美哈希" class="headerlink" title="扩展：完美哈希"></a>扩展：完美哈希</h2><p>待续</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ol>
+<li><a href="http://web.archive.org/web/20071223173210/http://www.concentric.net/~Ttwang/tech/inthash.htm" target="_blank" rel="noopener">http://web.archive.org/web/20071223173210/http://www.concentric.net/~Ttwang/tech/inthash.htm</a></li>
+<li><a href="http://www.cnblogs.com/fengfenggirl/p/hash_prob.html" target="_blank" rel="noopener">http://www.cnblogs.com/fengfenggirl/p/hash_prob.html</a></li>
+<li><a href="https://gist.github.com/badboy/6267743" target="_blank" rel="noopener">https://gist.github.com/badboy/6267743</a></li>
+<li><a href="https://blog.csdn.net/jasper_xulei/article/details/18364313" target="_blank" rel="noopener">https://blog.csdn.net/jasper_xulei/article/details/18364313</a></li>
+<li><a href="https://www.cnblogs.com/wt869054461/p/8148940.html" target="_blank" rel="noopener">https://www.cnblogs.com/wt869054461/p/8148940.html</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+      
+
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Hash/" rel="tag"># Hash</a>
+            
+              <a href="/tags/算法/" rel="tag"># 算法</a>
+            
+              <a href="/tags/概率/" rel="tag"># 概率</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2018/10/30/多设备同步Hexo博客/" rel="next" title="多设备同步Hexo博客">
+                  <i class="fa fa-chevron-left"></i> 多设备同步Hexo博客
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2018/12/22/推荐系统技术调研/" rel="prev" title="推荐系统技术简介">
+                  推荐系统技术简介 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    
+  <div class="comments" id="comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the comments powered by Disqus.</noscript>
+    </div>
+  </div>
+  
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+        
+        
+        
+        
+      
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#哈希函数的定义"><span class="nav-number">1.</span> <span class="nav-text">哈希函数的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#哈希函数的应用"><span class="nav-number">2.</span> <span class="nav-text">哈希函数的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#哈希函数的特点"><span class="nav-number">3.</span> <span class="nav-text">哈希函数的特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#哈希函数的设计"><span class="nav-number">4.</span> <span class="nav-text">哈希函数的设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#设计的关键"><span class="nav-number">4.1.</span> <span class="nav-text">设计的关键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些设计技巧"><span class="nav-number">4.2.</span> <span class="nav-text">一些设计技巧</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#哈希函数示例"><span class="nav-number">5.</span> <span class="nav-text">哈希函数示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java的HashMap实现中使用的哈希函数"><span class="nav-number">5.1.</span> <span class="nav-text">Java的HashMap实现中使用的哈希函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Thomas-Wang‘s-32-bit-MixFunction"><span class="nav-number">5.2.</span> <span class="nav-text">Thomas Wang‘s 32 bit MixFunction</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#哈希函数中的概率问题"><span class="nav-number">6.</span> <span class="nav-text">哈希函数中的概率问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题描述"><span class="nav-number">6.1.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#每个桶只放一个球的概率"><span class="nav-number">6.2.</span> <span class="nav-text">每个桶只放一个球的概率</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空桶的期望"><span class="nav-number">6.3.</span> <span class="nav-text">空桶的期望</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#冲突次数期望"><span class="nav-number">6.4.</span> <span class="nav-text">冲突次数期望</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#每个桶至少有一个球时球的总数的期望"><span class="nav-number">6.5.</span> <span class="nav-text">每个桶至少有一个球时球的总数的期望</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#试验验证"><span class="nav-number">6.6.</span> <span class="nav-text">试验验证</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决冲突"><span class="nav-number">7.</span> <span class="nav-text">解决冲突</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#需要注意的问题"><span class="nav-number">8.</span> <span class="nav-text">需要注意的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#扩展：完美哈希"><span class="nav-number">9.</span> <span class="nav-text">扩展：完美哈希</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文章"><span class="nav-number">10.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+        
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/avatar.png"
+      alt="Garion Clay">
+  <p class="site-author-name" itemprop="name">Garion Clay</p>
+  <div class="site-description" itemprop="description">博学之，审问之，慎思之，明辨之，笃行之</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/garionclay" title="GitHub &rarr; https://github.com/garionclay" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:dzc_dev@outlook.com" title="E-Mail &rarr; mailto:dzc_dev@outlook.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Garion Clay</span>
+</div>
+
+        
+
+
+
+
+
+
+  
+  <script>
+  function leancloudSelector(url) {
+    return document.getElementById(url).querySelector('.leancloud-visitors-count');
+  }
+  if (CONFIG.page.isPost) {
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = visitors.getAttribute('id').trim();
+      var title = visitors.getAttribute('data-flag-title').trim();
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .then(response => response.json())
+              .then(() => {
+                leancloudSelector(url).innerText = counter.time + 1;
+              })
+            
+              .catch(error => {
+                console.log('Failed to save visitor count', error);
+              })
+          } else {
+              leancloudSelector(url).innerText = 'Counter not initialized! More info at console err msg.';
+              console.error('ATTENTION! LeanCloud counter has security bug, see how to solve it here: https://github.com/theme-next/hexo-leancloud-counter-security. \n However, you can still use LeanCloud without security, by setting `security` option to `false`.');
+            
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  } else {
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return element.getAttribute('id').trim();
+      });
+
+      Counter('get', `/classes/Counter?where=${JSON.stringify({ url: { '$in': entries } })}`)
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length === 0) {
+            document.querySelectorAll('.leancloud_visitors .leancloud-visitors-count').forEach(element => {
+              element.innerText = 0;
+            });
+            return;
+          }
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.url;
+            var time = item.time;
+            leancloudSelector(url).innerText = time;
+          }
+          for (var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = leancloudSelector(url);
+            if (element.innerText == '') {
+              element.innerText = 0;
+            }
+          }
+        })
+        .catch(error => {
+          console.log('LeanCloud Counter Error', error);
+        });
+    }
+  }
+
+  fetch('https://app-router.leancloud.cn/2/route?appId=ucYMXFcF46NgMzPGVjCc7lV9-MdYXbMMI')
+    .then(response => response.json())
+    .then(({ api_server }) => {
+      var Counter = (method, url, data) => {
+        return fetch(`https://${api_server}/1.1${url}`, {
+          method: method,
+          headers: {
+            'X-LC-Id': 'ucYMXFcF46NgMzPGVjCc7lV9-MdYXbMMI',
+            'X-LC-Key': 'nzKf27zXyOMkcQkrdqF522Ma',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        const localhost = /http:\/\/(localhost|127.0.0.1|0.0.0.0)/;
+        if (localhost.test(document.URL)) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+
+
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+<script src="/js/utils.js?v=7.3.0"></script><script src="/js/motion.js?v=7.3.0"></script>
+<script src="/js/schemes/muse.js?v=7.3.0"></script>
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+<script>
+  function loadCount() {
+    var d = document, s = d.createElement('script');
+    s.src = 'https://garionclay.disqus.com/count.js';
+    s.id = 'dsq-count-scr';
+    (d.head || d.body).appendChild(s);
+  }
+  // defer loading until the whole page loading is completed
+  window.addEventListener('load', loadCount, false);
+</script>
+<script>
+  function disqus_config() {
+    this.page.url = "http://yoursite.com/2018/11/18/对hash函数的一些认识/";
+    this.page.identifier = "2018/11/18/对hash函数的一些认识/";
+    this.page.title = '对哈希函数的一些认识';};
+  function loadComments() {
+    if (window.DISQUS) {
+      DISQUS.reset({
+        reload: true,
+        config: disqus_config
+      });
+    } else {
+      var d = document, s = d.createElement('script');
+      s.src = 'https://garionclay.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', '' + +new Date());
+      (d.head || d.body).appendChild(s);
+    }
+  }
+    window.addEventListener('load', loadComments, false);
+  
+</script>
+
+</body>
+</html>
