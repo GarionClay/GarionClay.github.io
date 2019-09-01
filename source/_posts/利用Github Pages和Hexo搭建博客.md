@@ -282,7 +282,7 @@ avatar:
   rotated: false
 ```
 
-需要注意，如果你的博客中要使用Tex语法写一些数学公式的话，需要修改以下设置：
+需要注意，如果你的博客中要使用TeX语法写一些数学公式的话，需要修改以下设置：
 
 ```yaml
 math:
@@ -354,5 +354,44 @@ hexo n "文章名"
 
 就会在博客目录下的`\source\_posts`目录下生成一个`文章名.md`文件，打开这个markdown文档开始愉快的写作吧。
 
-自己手动写Markdown文档的使用不是那么良好，推荐使用[Typora](https://www.typora.io/)进行md文档的编辑，真的超好用，良心推荐！
+hexo生成的文件头一般包括如下内容：
+
+```markdown
+---
+title: postName #文章标题
+date: 2013-12-02 15:30:16 #文章生成时间，一般不改，当然也可以任意修改
+categories: 默认分类 #分类
+tags: [tag1,tag2,tag3] #文章标签，可空，多标签请用格式，注意:后面有个空格
+description: 附加一段文章摘要，字数最好在140字以内，会出现在meta的description里面
+---
+```
+
+自己手动写Markdown文档的使用体验不是很好，推荐使用[Typora](https://www.typora.io/)进行md文档的编辑，真的超好用，良心推荐！可以用`Ctrl+/`一键切换源码模式和实时预览模式。
+
+写完文章并保存后，在命令行中执行
+
+```bash
+hexo g
+hexo d
+```
+
+即可生成网页并发布。不过github服务器的反应有时候有点慢，发布之后等一会儿（大概10分钟以内）网站才会更新。
+
+你也可以在`hexo d`之前执行`hexo s`命令，这样就可以在浏览器中输入网址[http://localhost:4000/](http://localhost:4000/)在本地进行预览了，检查无误后再发布即可。
+
+## 注意事项
+
+* 博客中如果使用了TeX数学公式的话，需要打开数学公式渲染开关，在md文档前面加一行`mathjax: true`即可：
+
+  ```markdown
+  ---
+  title: 面试题- 两个玻璃球100层楼
+  date: 2019-01-13 22:00:00
+  categories: "算法"
+  tags: ["算法","面试","动态规划"]
+  mathjax: true
+  ---
+  ```
+
+  
 
